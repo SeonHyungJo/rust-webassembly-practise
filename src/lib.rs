@@ -100,3 +100,59 @@ pub async fn run(repo: String) -> Result<JsValue, JsValue> {
     // Send the `Branch` struct back to JS as an `Object`.
     Ok(JsValue::from_serde(&branch_info).unwrap())
 }
+
+#[wasm_bindgen]
+pub fn add_to_dom() -> Result<(), JsValue> {
+    let window = web_sys::window().expect("no global `window` exists");
+    let document = window.document().expect("should have a document on window");
+    let body = document.body().expect("document should have a body");
+
+    // Manufacture the element we're gonna append
+    let val = document.create_element("p")?;
+    val.set_text_content(Some("Hello from Rust!"));
+
+    body.append_child(&val)?;
+
+    Ok(())
+}
+
+#[wasm_bindgen]
+#[derive(Debug)]
+pub struct Counter {
+    key: char,
+    count: i32,
+}
+
+#[wasm_bindgen]
+impl Counter {
+    pub fn default() -> Counter {
+        log("Counter::default");
+        Self::new('a', 0)
+    }
+    pub fn new(key: char, count: i32) -> Counter {
+        log(&format!("Counter::new({}, {})", key, count));
+        Counter {
+            key: key,
+            count: count,
+        }
+    }
+
+    pub fn key(&self) -> char {
+        log("Counter.key()");
+        self.key
+    }
+
+    pub fn count(&self) -> i32 {
+        log("Counter.count");
+        self.count
+    }
+
+    pub fn increment(&mut self) {
+        log("Counter.increment");
+        self.count += 1;
+    }
+
+    pub fn update_key(&mut self, key: char) {
+        self.key = key;
+    }
+}

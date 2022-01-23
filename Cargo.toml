@@ -36,6 +36,10 @@ features = [
   'RequestInit',
   'RequestMode',
   'Response',
+  'Document',
+  'Element',
+  'HtmlElement',
+  'Node',
   'Window',
 ]
 
